@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=18",
-    "pnpm": ">=7",
-    "yarn": "please-use-pnpm",
-    "npm": "please-use-pnpm"
+    "node": ">=16",
+    "npm": ">=8",
+    "yarn": "please-use-npm",
+    "pnpm": "please-use-npm"
   },
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
