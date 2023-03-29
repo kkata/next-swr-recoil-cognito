@@ -1,14 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
-import { sessionState } from '@/recoil/auth';
+import { useSession } from 'next-auth/react';
 
 export function useRequireAuth(
   authRequired: boolean,
   redirectUrl = '/protected'
 ) {
   const router = useRouter();
-  const session = useRecoilValue(sessionState);
+  const { data: session } = useSession();
   const isAuth = !!session;
 
   console.log('isAuth', isAuth);
