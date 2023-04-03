@@ -1,28 +1,29 @@
-import useSWR from 'swr';
-import { selectorFamily, useRecoilValueLoadable } from 'recoil';
+import useSWR, { mutate } from 'swr';
 import { apiClient } from '@/lib/api';
+import { AxiosError } from 'axios';
 
-const dataSelector = selectorFamily({
-  key: 'dataSelector',
-  get: (url: string) => async () => {
-    const { data } = await apiClient.get(url);
-    return data;
-  },
-});
+const createFetcher =
+  <T, RequestData = any>(method: 'get' | 'post' | 'put' | 'delete') =>
+  (url: string, requestData?: RequestData) =>
+    apiClient[method]<T>(url, requestData).then((response) => response.data);
 
-export const useSWRAxios = <T>(url: string) => {
-  const { data, error } = useSWR<T>(url, apiClient.get);
-  const loadable = useRecoilValueLoadable(dataSelector(url));
+export const useSWRAxios = <T, RequestData = unknown>(
+  url: string,
+  method: 'get' | 'post' | 'put' | 'delete' = 'get'
+) => {
+  const fetcher = createFetcher<T, RequestData>(method);
 
-  // When the SWR data is available, use it. Otherwise, use the Recoil loadable.
-  const finalData = data ?? loadable.contents;
-  const isLoading = !data && loadable.state === 'loading';
-  const isError = error || (loadable.state === 'hasError' && !data);
+  const { data, error } = useSWR<T>(url, fetcher);
+
+  const isLoading = !data && !error;
+  const isError = error !== undefined;
 
   return {
-    data: finalData,
+    data,
     isLoading,
     isError,
-    error: isError ? error ?? loadable.contents : undefined,
+    error: error as AxiosError,
+    mutate: (data?: RequestData) =>
+      mutate(url, () => fetcher(url, data), false),
   };
 };

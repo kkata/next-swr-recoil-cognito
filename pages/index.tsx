@@ -6,7 +6,7 @@ import { counterAtom } from '@/state/counter/counterAtoms';
 
 import { doubledCounterSelector } from '@/state/counter/counterSelectors';
 
-import NonSSRWrapper from '@/components/NonSSRWrapper';
+// import NonSSRWrapper from '@/components/NonSSRWrapper';
 import { DemoComponent } from '@/components/DemoComponent';
 
 // Dynamic import '@/components/DemoComponent' to avoid SSR error
@@ -14,13 +14,13 @@ import { DemoComponent } from '@/components/DemoComponent';
 //   import('@/components/DemoComponent').then((module) => module.DemoComponent)
 // );
 
-const NoSRRDemoComponent = () => {
-  return (
-    <NonSSRWrapper>
-      <DemoComponent />
-    </NonSSRWrapper>
-  );
-};
+// const NoSRRDemoComponent = () => {
+//   return (
+//     <NonSSRWrapper>
+//       <DemoComponent />
+//     </NonSSRWrapper>
+//   );
+// };
 
 export default function Home({ formattedDate }: { formattedDate: string }) {
   const [count, setCount] = useRecoilState(counterAtom);
@@ -43,8 +43,11 @@ export default function Home({ formattedDate }: { formattedDate: string }) {
       <button onClick={() => setCount(count - 1)}>Decrement</button>
 
       <hr />
-      <h2>Recoil fetch data with swr</h2>
-      <NoSRRDemoComponent />
+      <h2>
+        <del>Recoil</del> fetch data with swr
+      </h2>
+      {/* <NoSRRDemoComponent /> */}
+      <DemoComponent />
     </>
   );
 }
